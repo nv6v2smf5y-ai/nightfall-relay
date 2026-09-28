@@ -441,10 +441,7 @@ import * as THREE from 'three';
    can never prevent the game itself from booting (a static import would hang the whole module). */
 let Peer=null, peerLoadPromise=null;
 const PEER_URLS=['https://cdn.jsdelivr.net/npm/peerjs@1.5.4/+esm','https://esm.sh/peerjs@1.5.4','https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js'];
-const NIGHTFALL_RELAY =
-  location.protocol === 'https:' || location.protocol === 'http:'
-    ? `${location.protocol === 'https:' ? 'wss' : 'ws'}://${location.host}/ws`
-    : 'wss://YOUR-RENDER-SERVICE.onrender.com/ws';
+const NIGHTFALL_RELAY = location.protocol === 'https:' ? `wss://${location.host}/ws` : `ws://${location.host}/ws`;
 function loadPeerLib(){
   if(Peer)return Promise.resolve(Peer);
   if(peerLoadPromise)return peerLoadPromise;

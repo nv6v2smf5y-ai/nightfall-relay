@@ -5,7 +5,7 @@ const crypto = require('crypto');
 const WebSocket = require('ws');
 
 const PORT = Number(process.env.PORT || 8765);
-const GAME_FILE = process.env.GAME_FILE || path.join(__dirname, 'nightfall-fps-v21-ctf-squad-ai-server-browser.html');
+const GAME_FILE = process.env.GAME_FILE || path.join(__dirname, 'index.html');
 const PREMADE = {
   'public-alpha': { name: 'PUBLIC ALPHA // NIGHTFALL RELAY', mode: 'ffa', map: 'plaza', teamSize: 1, maxPlayers: 2 },
   'community-ctf': { name: 'COMMUNITY CTF // NIGHTFALL RELAY', mode: 'ctf', map: 'harbor', teamSize: 1, maxPlayers: 2 }
