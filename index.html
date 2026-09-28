@@ -2548,12 +2548,13 @@ const MP={
   },
   joinWebSocketServer(code){
     this.close(true); this.transport='ws'; this.isHost=false; this.connections=new Map(); this.remotes=new Map(); this.roster=new Map(); this.playerId='client-'+Math.random().toString(36).slice(2,8); this.hostPeerId='server'; this.roomCode=code; this.lastRecvT=G.time; this.status('CONNECTING TO PERSISTENT '+code.toUpperCase()+' SERVER');
-    try{this.ws=new WebSocket(NIGHTFALL_RELAY);}
+    let socket;
+    try{socket=new WebSocket(NIGHTFALL_RELAY);this.ws=socket;}
     catch(err){this.status('WEBSOCKET UNAVAILABLE — '+err.message,true);return;}
-    this.ws.addEventListener('open',()=>{this.connected=true;this.lastRecvT=G.time;this.send({t:'join',room:code,mode:this.modeKey,map:this.mapKey,teamSize:this.teamSize,color:this.colorKey});this.status('PERSISTENT SERVER LINK ESTABLISHED — DEPLOY WHEN READY');this.refreshLobby();});
-    this.ws.addEventListener('message',e=>{this.lastRecvT=G.time;try{this.receive(JSON.parse(e.data),'server');}catch(err){console.warn('Nightfall relay packet',err);}});
-    this.ws.addEventListener('close',()=>{this.connected=false;this.refreshLobby();this.status('PERSISTENT SERVER LINK CLOSED',true);});
-    this.ws.addEventListener('error',()=>this.status('PERSISTENT SERVER UNREACHABLE — CHECK SERVER STATUS',true)); this.refreshLobby();
+    socket.addEventListener('open',()=>{if(this.ws!==socket)return;this.connected=true;this.lastRecvT=G.time;this.send({t:'join',room:code,mode:this.modeKey,map:this.mapKey,teamSize:this.teamSize,color:this.colorKey});this.status('PERSISTENT SERVER LINK ESTABLISHED — DEPLOY WHEN READY');this.refreshLobby();});
+    socket.addEventListener('message',e=>{if(this.ws!==socket)return;this.lastRecvT=G.time;try{this.receive(JSON.parse(e.data),'server');}catch(err){console.warn('Nightfall relay packet',err);}});
+    socket.addEventListener('close',()=>{if(this.ws!==socket)return;this.connected=false;this.refreshLobby();this.status('PERSISTENT SERVER LINK CLOSED — CLICK JOIN TO RETRY',true);});
+    socket.addEventListener('error',()=>{if(this.ws===socket)this.status('PERSISTENT SERVER UNREACHABLE — CHECK SERVER STATUS',true);}); this.refreshLobby();
   },
   joinServer(kind){
     if(kind==='ai'){this.startAIServer();return;}
